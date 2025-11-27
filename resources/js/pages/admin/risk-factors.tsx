@@ -1,5 +1,5 @@
 import RiskFactorController from '@/actions/App/Http/Controllers/Admin/RiskFactorController';
-import { router, Head, Link, usePage } from '@inertiajs/react';
+import { router, Head, Link, usePage, usePoll } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import {
     AlertDialog,
@@ -38,6 +38,7 @@ type RiskFactor = {
 
 // Update props type to include paginated data and filters
 export default function RiskFactors({ riskFactors, filters }: { riskFactors: Paginator<RiskFactor>, filters: { search?: string } }) {
+    usePoll(2000);
     // Add local state for search input
     const [search, setSearch] = React.useState(filters.search || '');
 

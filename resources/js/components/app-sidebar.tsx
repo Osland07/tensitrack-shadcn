@@ -16,12 +16,13 @@ import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid, AlertTriangle, ListChecks } from 'lucide-react';
 import RiskLevelController from '@/actions/App/Http/Controllers/Admin/RiskLevelController';
 import RiskFactorController from '@/actions/App/Http/Controllers/Admin/RiskFactorController';
+import { index as adminScreeningsIndex } from '@/routes/admin/screenings';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: dashboard().url,
         icon: LayoutGrid,
     },
     {
@@ -34,18 +35,15 @@ const mainNavItems: NavItem[] = [
         href: RiskFactorController.index.url(),
         icon: ListChecks,
     },
-];
-
-const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
+        title: 'Aturan Sistem',
+        href: '/admin/rules',
+        icon: BookOpen,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Riwayat Skrining',
+        href: adminScreeningsIndex().url,
+        icon: ListChecks, // Using ListChecks as a placeholder icon for history
     },
 ];
 
@@ -56,7 +54,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                            <Link href={dashboard().url} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -69,7 +67,6 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

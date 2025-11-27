@@ -13,13 +13,13 @@ class RiskLevelSeeder extends Seeder
     public function run(): void
     {
         $riskLevels = [
-            ['code' => 'RL01', 'name' => 'Rendah', 'description' => 'Tidak ada atau sangat sedikit faktor risiko terdeteksi. Pertahankan gaya hidup sehat.'],
-            ['code' => 'RL02', 'name' => 'Sedang', 'description' => 'Beberapa faktor risiko terdeteksi. Perlu perhatian dan perubahan gaya hidup.'],
-            ['code' => 'RL03', 'name' => 'Tinggi', 'description' => 'Banyak faktor risiko terdeteksi. Sangat disarankan untuk konsultasi medis dan perubahan gaya hidup signifikan.'],
+            ['code' => 'H01', 'name' => 'Rendah', 'description' => 'Tidak ada atau sangat sedikit faktor risiko terdeteksi. Pertahankan gaya hidup sehat.'],
+            ['code' => 'H02', 'name' => 'Sedang', 'description' => 'Beberapa faktor risiko terdeteksi. Perlu perhatian dan perubahan gaya hidup.'],
+            ['code' => 'H03', 'name' => 'Tinggi', 'description' => 'Banyak faktor risiko terdeteksi. Sangat disarankan untuk konsultasi medis dan perubahan gaya hidup signifikan.'],
         ];
 
         foreach ($riskLevels as $level) {
-            RiskLevel::firstOrCreate(
+            RiskLevel::updateOrCreate(
                 ['code' => $level['code']],
                 ['name' => $level['name'], 'description' => $level['description']]
             );

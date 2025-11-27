@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             RiskFactorSeeder::class,
             RiskLevelSeeder::class,
+            ScreeningSeeder::class,
         ]);
     }
 }

@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +16,6 @@ type RiskFactor = {
 export default function RiskFactorsEdit({ riskFactor }: { riskFactor: RiskFactor }) {
     // Initialize the form with the existing risk factor data
     const { data, setData, patch, processing, errors } = useForm({
-        code: riskFactor.code,
         name: riskFactor.name,
     });
 
@@ -24,7 +23,11 @@ export default function RiskFactorsEdit({ riskFactor }: { riskFactor: RiskFactor
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
         // Use PATCH for updating
-        patch(RiskFactorController.update.url(riskFactor.id));
+        patch(RiskFactorController.update.url(riskFactor.id), {
+            // Only send name, description, etc.
+            preserveState: true,
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -35,18 +38,6 @@ export default function RiskFactorsEdit({ riskFactor }: { riskFactor: RiskFactor
                     <h2 className="section-title">Form Edit Faktor Risiko</h2>
                     
                     <form onSubmit={submit} className="mt-6 space-y-6">
-                        <div>
-                            <Label htmlFor="code">Kode</Label>
-                            <Input
-                                id="code"
-                                name="code"
-                                value={data.code}
-                                onChange={(e) => setData('code', e.target.value)}
-                                className="mt-1 block w-full input-modern"
-                            />
-                            {errors.code && <p className="text-sm text-red-600">{errors.code}</p>}
-                        </div>
-
                         <div>
                             <Label htmlFor="name">Nama</Label>
                             <Input
@@ -63,8 +54,10 @@ export default function RiskFactorsEdit({ riskFactor }: { riskFactor: RiskFactor
                             <Button type="submit" disabled={processing} className="btn-modern bg-primary text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">
                                 Simpan Perubahan
                             </Button>
-                            <Button type="button" variant="outline" className="btn-modern" onClick={() => window.history.back()}>
-                                Kembali
+                            <Button type="button" variant="outline" className="btn-modern" asChild>
+                                <Link href={RiskFactorController.index.url()}>
+                                    Kembali
+                                </Link>
                             </Button>
                         </div>
                     </form>
@@ -73,3 +66,4 @@ export default function RiskFactorsEdit({ riskFactor }: { riskFactor: RiskFactor
         </AppLayout>
     );
 }
+

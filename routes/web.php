@@ -3,23 +3,41 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use App\Models\RiskFactor;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [
         'canRegister' => Features::enabled(Features::registration()),
+        'riskFactors' => RiskFactor::select('code', 'name')->get(),
     ]);
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+Route::post('/screening/submit', [\App\Http\Controllers\ScreeningController::class, 'store'])->name('screening.submit');
 
-    Route::get('/profile-user/edit', function () {
-        return Inertia::render('ProfileUser/Edit');
-    })->name('profile-user.edit');
+Route::get('/screening', function () {
+    return Inertia::render('screening/index', [
+        'riskFactors' => RiskFactor::select('code', 'name')->get(),
+    ]);
+})->middleware(['auth', 'verified'])->name('screening.index');
 
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', function () {
+            return Inertia::render('dashboard');
+        })->name('dashboard');
+
+        Route::get('/screenings', [\App\Http\Controllers\Admin\ScreeningHistoryController::class, 'index'])
+            ->name('admin.screenings.index');
+
+        Route::get('/screenings/{screening}', [\App\Http\Controllers\Admin\ScreeningHistoryController::class, 'show'])
+            ->name('admin.screenings.show');
+
+        Route::get('/rules', function (\App\Services\HypertensionInferenceService $inferenceService) {
+            return Inertia::render('dashboard/rules', [
+                'rules' => $inferenceService->getRules(),
+                'riskFactors' => \App\Models\RiskFactor::all()->pluck('name', 'code'),
+            ]);
+        })->name('admin.rules');
         Route::get('risk-levels', [\App\Http\Controllers\Admin\RiskLevelController::class, 'index'])
             ->name('risk-levels.index');
         Route::get('risk-levels/create', [\App\Http\Controllers\Admin\RiskLevelController::class, 'create'])
@@ -46,6 +64,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('risk-factors/{riskFactor}', [\App\Http\Controllers\Admin\RiskFactorController::class, 'destroy'])
             ->name('risk-factors.destroy');
     });
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::patch('/profile/bmi-update', [\App\Http\Controllers\ProfileController::class, 'updateBmi'])->name('profile.bmi.update');
+    Route::patch('/profile-user', [\App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('profile-user.update');
+
+    Route::get('/profile-user/edit', function () {
+        $user = auth()->user();
+        $screenings = $user->screenings()->with('riskLevel')->latest()->get();
+
+        return Inertia::render('ProfileUser/Edit', [
+            'screenings' => $screenings,
+        ]);
+    })->name('profile-user.edit');
 });
 
 require __DIR__.'/settings.php';

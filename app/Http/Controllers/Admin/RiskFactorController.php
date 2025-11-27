@@ -66,16 +66,6 @@ class RiskFactorController extends Controller
     {
         $data = $request->validated();
 
-        if (empty($data['code']) && $riskFactor->code === null) {
-            $last = RiskFactor::query()
-                ->where('code', 'like', 'E%')
-                ->orderBy('code', 'desc')
-                ->first();
-
-            $next = $last ? (int) preg_replace('/\D/', '', $last->code) + 1 : 1;
-            $data['code'] = 'E'.str_pad((string) $next, 2, '0', STR_PAD_LEFT);
-        }
-
         $riskFactor->update($data);
 
         return back()->with('success', 'Data berhasil diperbarui!');

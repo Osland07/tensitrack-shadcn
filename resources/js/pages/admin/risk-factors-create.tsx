@@ -8,14 +8,13 @@ import { Form } from '@inertiajs/react'; // Ensure Form is imported
 
 export default function RiskFactorsCreate() {
     const { data, setData, post, processing, errors, reset } = useForm({
-        code: '',
         name: '',
     });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
         post(RiskFactorController.store.url(), {
-            onSuccess: () => reset(), // Reset form on successful submission
+            onSuccess: () => reset({name: ''}), // Reset form on successful submission
         });
     };
 
@@ -27,18 +26,6 @@ export default function RiskFactorsCreate() {
                     <h2 className="section-title">Form Tambah Faktor Risiko</h2>
                     
                     <form onSubmit={submit} className="mt-6 space-y-6">
-                        <div>
-                            <Label htmlFor="code">Kode</Label>
-                            <Input
-                                id="code"
-                                name="code"
-                                value={data.code}
-                                onChange={(e) => setData('code', e.target.value)}
-                                className="mt-1 block w-full input-modern"
-                            />
-                            {errors.code && <p className="text-sm text-red-600">{errors.code}</p>}
-                        </div>
-
                         <div>
                             <Label htmlFor="name">Nama</Label>
                             <Input

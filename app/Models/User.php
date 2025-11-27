@@ -22,6 +22,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
+        'height',
+        'weight',
+        'age',
+        'gender',
+        'systolic',
+        'diastolic',
     ];
 
     /**
@@ -47,6 +54,12 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'is_admin' => 'boolean',
         ];
+    }
+
+    public function screenings()
+    {
+        return $this->hasMany(Screening::class);
     }
 }

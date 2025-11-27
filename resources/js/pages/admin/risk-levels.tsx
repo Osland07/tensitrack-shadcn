@@ -1,5 +1,5 @@
 import RiskLevelController from '@/actions/App/Http/Controllers/Admin/RiskLevelController';
-import { router, Form, Head, Link, usePage, useForm } from '@inertiajs/react';
+import { router, Form, Head, Link, usePage, useForm, usePoll } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import {
     AlertDialog,
@@ -40,6 +40,7 @@ type RiskLevel = {
 
 // Update props type to include paginated data and filters
 export default function RiskLevels({ riskLevels, filters }: { riskLevels: Paginator<RiskLevel>, filters: { search?: string } }) {
+    usePoll(2000);
     // Add local state for search input
     const [search, setSearch] = React.useState(filters.search || '');
 
@@ -107,7 +108,7 @@ export default function RiskLevels({ riskLevels, filters }: { riskLevels: Pagina
                                         <td className="p-3 text-center">{riskLevel.suggestion}</td>
                                                     <td className="p-3 text-center">
                                                         <div className="flex items-center justify-center gap-2">                                                <Button asChild size="sm" className="btn-modern bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground">
-                                                    <Link href={RiskLevelController.edit.url(riskLevel.id)}>Edit</Link>
+                                                    <Link href={RiskLevelController.edit({ riskLevel: riskLevel.id }).url}>Edit</Link>
                                                 </Button>
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
@@ -126,7 +127,7 @@ export default function RiskLevels({ riskLevels, filters }: { riskLevels: Pagina
                                                             <AlertDialogCancel>Batal</AlertDialogCancel>
                                                             <AlertDialogAction
                                                                 onClick={() => {
-                                                                    router.delete(RiskLevelController.destroy.url(riskLevel.id), {
+                                                                    router.delete(RiskLevelController.destroy({ riskLevel: riskLevel.id }).url, {
                                                                         preserveScroll: true,
                                                                     });
                                                                 }}

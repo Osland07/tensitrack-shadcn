@@ -1,53 +1,44 @@
-import React, { PropsWithChildren, useState } from 'react';
-import { Head } from '@inertiajs/react';
+import React from 'react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import PublicLayout from '@/layouts/public-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { type SharedData, type User } from '@/types';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import { update } from '@/routes/profile-user';
 
-// --- Fake Data ---
-const initialUserProfile = {
-    name: 'John Doe',
-    age: 34,
-    gender: 'male',
-    height: 175,
-    weight: 80,
-    systolic: 120,
-    diastolic: 80,
-};
+interface Screening {
+    id: number;
+    created_at: string;
+    risk_level: {
+        name: string;
+    }
+}
 
-const fakeScreeningHistory = [
-    { id: 1, date: '2024-10-15', result: 'Risiko Rendah' },
-    { id: 2, date: '2024-07-22', result: 'Risiko Rendah' },
-    { id: 3, date: '2024-04-11', result: 'Risiko Sedang' },
-];
+interface ProfileUserEditProps {
+    auth: SharedData['auth'];
+    screenings: Screening[];
+}
 
 export default function ProfileUserEdit() {
-    // In a real app, this would come from props and be managed with useForm
-    const [formData, setFormData] = useState(initialUserProfile);
+    const { auth, screenings } = usePage<ProfileUserEditProps>().props;
 
-    // This is just a placeholder for the form submission handler
+    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
+        name: auth.user.name || '',
+        age: auth.user.age || '',
+        gender: auth.user.gender || 'male',
+        systolic: auth.user.systolic || '',
+        diastolic: auth.user.diastolic || '',
+    });
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Form submitted with data:", formData);
-        // In a real app, you would send this data to the backend
+        patch(update().url);
     };
 
     return (
@@ -64,21 +55,23 @@ export default function ProfileUserEdit() {
                                 <CardTitle>Informasi Pribadi</CardTitle>
                                 <CardDescription>Perbarui informasi pribadi dan data kesehatan Anda.</CardDescription>
                             </CardHeader>
-                            <CardContent className="grid gap-6">
+                            <CardContent>
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div className="grid md:grid-cols-2 gap-4">
                                         <div className="grid gap-2">
                                             <Label htmlFor="name">Nama</Label>
-                                            <Input id="name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                                            <Input id="name" value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                                            {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
                                         </div>
                                         <div className="grid gap-2">
                                             <Label htmlFor="age">Usia</Label>
-                                            <Input id="age" type="number" value={formData.age} onChange={(e) => setFormData({...formData, age: parseInt(e.target.value) || 0})} />
+                                            <Input id="age" type="number" value={data.age} onChange={(e) => setData('age', e.target.value)} />
+                                            {errors.age && <p className="text-sm text-red-500 mt-1">{errors.age}</p>}
                                         </div>
                                     </div>
                                     <div className="grid gap-2">
                                         <Label>Jenis Kelamin</Label>
-                                        <RadioGroup defaultValue={formData.gender} onValueChange={(value) => setFormData({...formData, gender: value})} className="flex gap-4">
+                                        <RadioGroup value={data.gender} onValueChange={(value) => setData('gender', value)} className="flex gap-4">
                                             <div className="flex items-center space-x-2">
                                                 <RadioGroupItem value="male" id="genderMale" />
                                                 <Label htmlFor="genderMale">Laki-laki</Label>
@@ -88,32 +81,36 @@ export default function ProfileUserEdit() {
                                                 <Label htmlFor="genderFemale">Perempuan</Label>
                                             </div>
                                         </RadioGroup>
+                                        {errors.gender && <p className="text-sm text-red-500 mt-1">{errors.gender}</p>}
                                     </div>
                                     
                                     <Separator />
 
                                     <div className="grid md:grid-cols-2 gap-4">
                                         <div className="grid gap-2">
-                                            <Label htmlFor="height">Tinggi Badan (cm)</Label>
-                                            <Input id="height" type="number" value={formData.height} onChange={(e) => setFormData({...formData, height: parseInt(e.target.value) || 0})} />
+                                            <Label htmlFor="systolic">Tensi Sistolik Terakhir</Label>
+                                            <Input id="systolic" type="number" value={data.systolic} onChange={(e) => setData('systolic', e.target.value)} />
+                                            {errors.systolic && <p className="text-sm text-red-500 mt-1">{errors.systolic}</p>}
                                         </div>
                                         <div className="grid gap-2">
-                                            <Label htmlFor="weight">Berat Badan (kg)</Label>
-                                            <Input id="weight" type="number" value={formData.weight} onChange={(e) => setFormData({...formData, weight: parseInt(e.target.value) || 0})} />
-                                        </div>
-                                    </div>
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="systolic">Tensi Sistolik</Label>
-                                            <Input id="systolic" type="number" value={formData.systolic} onChange={(e) => setFormData({...formData, systolic: parseInt(e.target.value) || 0})} />
-                                        </div>
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="diastolic">Tensi Diastolik</Label>
-                                            <Input id="diastolic" type="number" value={formData.diastolic} onChange={(e) => setFormData({...formData, diastolic: parseInt(e.target.value) || 0})} />
+                                            <Label htmlFor="diastolic">Tensi Diastolik Terakhir</Label>
+                                            <Input id="diastolic" type="number" value={data.diastolic} onChange={(e) => setData('diastolic', e.target.value)} />
+                                            {errors.diastolic && <p className="text-sm text-red-500 mt-1">{errors.diastolic}</p>}
                                         </div>
                                     </div>
                                     
-                                    <Button type="submit" className="w-full md:w-auto">Simpan Perubahan</Button>
+                                    <div className="flex items-center gap-4">
+                                        <Button 
+                                            type="submit" 
+                                            className="w-full md:w-auto transition-all duration-300 ease-in-out hover:scale-105 active:scale-100" 
+                                            disabled={processing}
+                                        >
+                                            {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
+                                        </Button>
+                                        {recentlySuccessful && (
+                                            <p className="text-sm text-green-600">Berhasil disimpan!</p>
+                                        )}
+                                    </div>
                                 </form>
                             </CardContent>
                         </Card>
@@ -123,6 +120,7 @@ export default function ProfileUserEdit() {
                         <Card>
                             <CardHeader>
                                 <CardTitle>Riwayat Skrining</CardTitle>
+                                <CardDescription>Berikut adalah riwayat skrining yang pernah Anda lakukan.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <Table>
@@ -133,12 +131,20 @@ export default function ProfileUserEdit() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {fakeScreeningHistory.map((item) => (
-                                            <TableRow key={item.id}>
-                                                <TableCell>{item.date}</TableCell>
-                                                <TableCell className="text-right font-medium">{item.result}</TableCell>
+                                        {screenings.length > 0 ? (
+                                            screenings.map((item) => (
+                                                <TableRow key={item.id}>
+                                                    <TableCell>{new Date(item.created_at).toLocaleDateString()}</TableCell>
+                                                    <TableCell className="text-right font-medium">{item.risk_level.name}</TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={2} className="text-center">
+                                                    Belum ada riwayat skrining.
+                                                </TableCell>
                                             </TableRow>
-                                        ))}
+                                        )}
                                     </TableBody>
                                 </Table>
                             </CardContent>
@@ -150,6 +156,6 @@ export default function ProfileUserEdit() {
     );
 }
 
-ProfileUserEdit.layout = (page: React.ReactElement<PropsWithChildren<{ title?: string }>>) => {
+ProfileUserEdit.layout = (page: React.ReactElement) => {
     return <PublicLayout title="Profil Pengguna" hideFooter={true} children={page} />;
 };
