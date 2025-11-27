@@ -2,156 +2,156 @@
 cd "%~dp0\.."
 
 echo =========================================
-echo Initializing Laravel Application Setup
+echo Inisialisasi Penyiapan Aplikasi Laravel
 echo =========================================
-echo This script will perform the following tasks:
-echo 1. Check for and copy .env file if missing.
-echo 2. Install Composer (PHP) dependencies.
-echo 3. Generate application key.
-echo 4. Run database migrations.
-echo 5. Run database seeders.
-echo 6. Create storage link.
-echo 7. Install Node.js (NPM) dependencies.
-echo 8. Generate Wayfinder routes.
-echo 9. Run Laravel Pint for code formatting.
+echo Skrip ini akan melakukan tugas-tugas berikut:
+echo 1. Memeriksa dan menyalin file .env jika tidak ada.
+echo 2. Memasang dependensi Composer (PHP).
+echo 3. Membuat kunci aplikasi.
+echo 4. Menjalankan migrasi database.
+echo 5. Menjalankan seeder database.
+echo 6. Membuat tautan penyimpanan (storage link).
+echo 7. Memasang dependensi Node.js (NPM).
+echo 8. Membuat rute Wayfinder.
+echo 9. Menjalankan Laravel Pint untuk pemformatan kode.
 echo =========================================
-echo Press any key to start the setup...
+echo Tekan sembarang tombol untuk memulai penyiapan...
 pause
 cls
 
 echo =========================================
-echo Task 1/9: Checking for .env file
+echo Tugas 1/9: Memeriksa file .env
 echo =========================================
 IF NOT EXIST .env (
-    echo Starting: Checking for .env file and copying if missing...
+    echo Memulai: Memeriksa file .env dan menyalin jika tidak ada...
     copy .env.example .env > NUL
     if %errorlevel% equ 0 (
-        echo Finished: .env file copied successfully.
+        echo Selesai: File .env berhasil disalin.
         timeout /t 2 /nobreak > NUL
     ) else (
-        echo ERROR: Copying .env.example to .env failed!
+        echo ERROR: Gagal menyalin .env.example ke .env!
         pause
         exit /b %errorlevel%
     )
 ) ELSE (
-    echo .env file already exists, skipping copy.
+    echo File .env sudah ada, melewati penyalinan.
     timeout /t 2 /nobreak > NUL
 )
 
 echo =========================================
-echo Task 2/9: Installing Composer dependencies
+echo Tugas 2/9: Memasang dependensi Composer
 echo =========================================
-echo Starting: Installing Composer dependencies in a new window...
-start /wait "Composer Install" cmd /c "cd "%~dp0\.." && composer install && exit"
+echo Memulai: Memasang dependensi Composer...
+composer install
 if %errorlevel% equ 0 (
-    echo Finished: Installing Composer dependencies.
+    echo Selesai: Dependensi Composer berhasil dipasang.
     timeout /t 2 /nobreak > NUL
 ) else (
-    echo ERROR: Installing Composer dependencies failed! Check the Composer Install window for details.
+    echo ERROR: Pemasangan dependensi Composer gagal!
     pause
     exit /b %errorlevel%
 )
 
 echo =========================================
-echo Task 3/9: Generating application key
+echo Tugas 3/9: Membuat kunci aplikasi
 echo =========================================
-echo Starting: Generating application key...
+echo Memulai: Membuat kunci aplikasi...
 php artisan key:generate
 if %errorlevel% equ 0 (
-    echo Finished: Generating application key.
+    echo Selesai: Kunci aplikasi berhasil dibuat.
     timeout /t 2 /nobreak > NUL
 ) else (
-    echo ERROR: Generating application key failed!
+    echo ERROR: Pembuatan kunci aplikasi gagal!
     pause
     exit /b %errorlevel%
 )
 
 echo =========================================
-echo Task 4/9: Running database migrations
+echo Tugas 4/9: Menjalankan migrasi database
 echo =========================================
-echo Starting: Running database migrations...
+echo Memulai: Menjalankan migrasi database...
 php artisan migrate --force
 if %errorlevel% equ 0 (
-    echo Finished: Running database migrations.
+    echo Selesai: Migrasi database berhasil dijalankan.
     timeout /t 2 /nobreak > NUL
 ) else (
-    echo ERROR: Running database migrations failed!
+    echo ERROR: Migrasi database gagal!
     pause
     exit /b %errorlevel%
 )
 
 echo =========================================
-echo Task 5/9: Running database seeders
+echo Tugas 5/9: Menjalankan seeder database
 echo =========================================
-echo Starting: Running database seeders...
+echo Memulai: Menjalankan seeder database...
 php artisan db:seed
 if %errorlevel% equ 0 (
-    echo Finished: Running database seeders.
+    echo Selesai: Seeder database berhasil dijalankan.
     timeout /t 2 /nobreak > NUL
 ) else (
-    echo ERROR: Running database seeders failed!
+    echo ERROR: Seeder database gagal dijalankan!
     pause
     exit /b %errorlevel%
 )
 
 echo =========================================
-echo Task 6/9: Creating storage link
+echo Tugas 6/9: Membuat tautan penyimpanan (storage link)
 echo =========================================
-echo Starting: Creating storage link...
+echo Memulai: Membuat tautan penyimpanan (storage link)...
 php artisan storage:link
 if %errorlevel% equ 0 (
-    echo Finished: Creating storage link.
+    echo Selesai: Tautan penyimpanan berhasil dibuat.
     timeout /t 2 /nobreak > NUL
 ) else (
-    echo ERROR: Creating storage link failed!
+    echo ERROR: Pembuatan tautan penyimpanan gagal!
     pause
     exit /b %errorlevel%
 )
 
 echo =========================================
-echo Task 7/9: Installing Node.js dependencies
+echo Tugas 7/9: Memasang dependensi Node.js (NPM)
 echo =========================================
-echo Starting: Installing Node.js dependencies in a new window...
-start /wait "NPM Install" cmd /c "cd "%~dp0\.." && npm install && exit"
+echo Memulai: Memasang dependensi Node.js (NPM)...
+npm install
 if %errorlevel% equ 0 (
-    echo Finished: Installing Node.js dependencies.
+    echo Selesai: Dependensi Node.js berhasil dipasang.
     timeout /t 2 /nobreak > NUL
 ) else (
-    echo ERROR: Installing Node.js dependencies failed! Check the NPM Install window for details.
+    echo ERROR: Pemasangan dependensi Node.js gagal!
     pause
     exit /b %errorlevel%
 )
 
 echo =========================================
-echo Task 8/9: Generating Wayfinder routes
+echo Tugas 8/9: Membuat rute Wayfinder
 echo =========================================
-echo Starting: Generating Wayfinder routes...
+echo Memulai: Membuat rute Wayfinder...
 php artisan wayfinder:generate
 if %errorlevel% equ 0 (
-    echo Finished: Generating Wayfinder routes.
+    echo Selesai: Rute Wayfinder berhasil dibuat.
     timeout /t 2 /nobreak > NUL
 ) else (
-    echo ERROR: Generating Wayfinder routes failed!
+    echo ERROR: Pembuatan rute Wayfinder gagal!
     pause
     exit /b %errorlevel%
 )
 
 echo =========================================
-echo Task 9/9: Running Laravel Pint for code formatting
+echo Tugas 9/9: Menjalankan Laravel Pint untuk pemformatan kode
 echo =========================================
-echo Starting: Running Laravel Pint for code formatting...
+echo Memulai: Menjalankan Laravel Pint untuk pemformatan kode...
 vendor\bin\pint --dirty
 if %errorlevel% equ 0 (
-    echo Finished: Running Laravel Pint for code formatting.
+    echo Selesai: Laravel Pint berhasil dijalankan.
     timeout /t 2 /nobreak > NUL
 ) else (
-    echo ERROR: Running Laravel Pint for code formatting failed!
+    echo ERROR: Laravel Pint gagal dijalankan!
     pause
     exit /b %errorlevel%
 )
 
 echo =========================================
-echo Setup complete!
-echo All tasks have been processed.
+echo Penyiapan selesai!
+echo Semua tugas telah diproses.
 echo =========================================
 pause
