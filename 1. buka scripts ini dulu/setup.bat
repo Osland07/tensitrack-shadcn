@@ -1,4 +1,5 @@
 @echo off
+cd "%~dp0\.."
 
 REM Check if .env exists, if not, copy from .env.example
 IF NOT EXIST .env (

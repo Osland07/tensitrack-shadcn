@@ -1,9 +1,10 @@
 @echo off
+cd "%~dp0\.."
 
 REM Check if .env exists, if not, run setup.bat
 IF NOT EXIST .env (
     echo .env file not found. Running initial setup...
-    call setup.bat
+    call scripts\setup.bat
     IF ERRORLEVEL 1 (
         echo Setup failed. Exiting.
         goto :eof
