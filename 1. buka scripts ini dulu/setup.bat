@@ -1,152 +1,145 @@
 @echo off
-chcp 65001 > nul
-for /f ""usebackq tokens=*" %%a in (`"prompt $E$H & for %%b in (1) do rem"`) do set "ESC=%%a"
-set GREEN_TEXT=%ESC%[92m
-set RED_TEXT=%ESC%[91m
-set RESET_COLOR=%ESC%[0m
+setlocal enabledelayedexpansion
 cd "%~dp0\.."
 
 echo =========================================
 echo Inisialisasi Penyiapan Aplikasi Laravel
 echo =========================================
-echo Skrip ini akan melakukan tugas-tugas berikut:
-echo 1. Memeriksa dan menyalin file .env jika tidak ada.
-echo 2. Memasang dependensi Composer (PHP).
-echo 3. Membuat kunci aplikasi.
-echo 4. Menjalankan migrasi database.
-echo 5. Menjalankan seeder database.
-echo 6. Membuat tautan penyimpanan (storage link).
-echo 7. Memasang dependensi Node.js (NPM).
-echo 8. Membuat rute Wayfinder.
-echo 9. Menjalankan Laravel Pint untuk pemformatan kode.
-echo =========================================
 echo Tekan sembarang tombol untuk memulai penyiapan...
 pause
 cls
 
+:CHECK_ENV
 echo =========================================
 echo Tugas 1/9: Memeriksa file .env
 echo =========================================
 IF NOT EXIST .env (
-    echo Memulai: Memeriksa file .env dan menyalin jika tidak ada...
+    echo File .env tidak ditemukan, menyalin .env.example...
     copy .env.example .env > NUL
-    if %errorlevel% equ 0 (
-        echo ^%GREEN_TEXT^%Selesai: File .env berhasil disalin.^%RESET_COLOR^%
-    ) else (
-        echo ^%RED_TEXT^%ERROR: Gagal menyalin .env.example ke .env!^%RESET_COLOR^%
+    if !errorlevel! neq 0 (
+        echo ERROR: Gagal menyalin file .env!
+        echo ERRORLEVEL: !errorlevel!
         pause
-        exit /b %errorlevel%
+        goto END
     )
+    echo Selesai: .env berhasil dibuat.
 ) ELSE (
-    echo File .env sudah ada, melewati penyalinan.
+    echo File .env sudah ada, melewati.
 )
+timeout /t 1 >nul
+
 
 echo =========================================
-echo Tugas 2/9: Memasang dependensi Composer
+echo Tugas 2/9: Composer Install
 echo =========================================
-echo Memulai: Memasang dependensi Composer...
-composer install
-if %errorlevel% equ 0 (
-    echo ^%GREEN_TEXT^%Selesai: Dependensi Composer berhasil dipasang.^%RESET_COLOR^%
-) else (
-    echo ^%RED_TEXT^%ERROR: Pemasangan dependensi Composer gagal!^%RESET_COLOR^%
+cmd /c composer install
+if !errorlevel! neq 0 (
+    echo ERROR: Composer gagal dijalankan!
+    echo ERRORLEVEL: !errorlevel!
     pause
-    exit /b %errorlevel%
+    goto END
 )
+echo Selesai composer install.
+timeout /t 1 >nul
+
 
 echo =========================================
-echo Tugas 3/9: Membuat kunci aplikasi
+echo Tugas 3/9: php artisan key:generate
 echo =========================================
-echo Memulai: Membuat kunci aplikasi...
-php artisan key:generate
-if %errorlevel% equ 0 (
-    echo ^%GREEN_TEXT^%Selesai: Kunci aplikasi berhasil dibuat.^%RESET_COLOR^%
-) else (
-    echo ^%RED_TEXT^%ERROR: Pembuatan kunci aplikasi gagal!^%RESET_COLOR^%
+cmd /c php artisan key:generate
+if !errorlevel! neq 0 (
+    echo ERROR: key:generate gagal!
+    echo ERRORLEVEL: !errorlevel!
     pause
-    exit /b %errorlevel%
+    goto END
 )
+timeout /t 1 >nul
+
 
 echo =========================================
-echo Tugas 4/9: Menjalankan migrasi database
+echo Tugas 4/9: php artisan migrate --force
 echo =========================================
-echo Memulai: Menjalankan migrasi database...
-php artisan migrate --force
-if %errorlevel% equ 0 (
-    echo ^%GREEN_TEXT^%Selesai: Migrasi database berhasil dijalankan.^%RESET_COLOR^%
-) else (
-    echo ^%RED_TEXT^%ERROR: Migrasi database gagal!^%RESET_COLOR^%
+cmd /c php artisan migrate --force
+if !errorlevel! neq 0 (
+    echo ERROR: migrate gagal!
+    echo ERRORLEVEL: !errorlevel!
     pause
-    exit /b %errorlevel%
+    goto END
 )
+timeout /t 1 >nul
+
 
 echo =========================================
-echo Tugas 5/9: Menjalankan seeder database
+echo Tugas 5/9: php artisan db:seed
 echo =========================================
-echo Memulai: Menjalankan seeder database...
-php artisan db:seed
-if %errorlevel% equ 0 (
-    echo ^%GREEN_TEXT^%Selesai: Seeder database berhasil dijalankan.^%RESET_COLOR^%
-) else (
-    echo ^%RED_TEXT^%ERROR: Seeder database gagal dijalankan!^%RESET_COLOR^%
+cmd /c php artisan db:seed
+if !errorlevel! neq 0 (
+    echo ERROR: seed gagal!
+    echo ERRORLEVEL: !errorlevel!
     pause
-    exit /b %errorlevel%
+    goto END
 )
+timeout /t 1 >nul
+
 
 echo =========================================
-echo Tugas 6/9: Membuat tautan penyimpanan (storage link)
+echo Tugas 6/9: php artisan storage:link
 echo =========================================
-echo Memulai: Membuat tautan penyimpanan (storage link)...
-php artisan storage:link
-if %errorlevel% equ 0 (
-    echo ^%GREEN_TEXT^%Selesai: Tautan penyimpanan berhasil dibuat.^%RESET_COLOR^%
-) else (
-    echo ^%RED_TEXT^%ERROR: Pembuatan tautan penyimpanan gagal!^%RESET_COLOR^%
+cmd /c php artisan storage:link
+if !errorlevel! neq 0 (
+    echo ERROR: storage:link gagal!
+    echo ERRORLEVEL: !errorlevel!
     pause
-    exit /b %errorlevel%
+    goto END
 )
+timeout /t 1 >nul
+
 
 echo =========================================
-echo Tugas 7/9: Memasang dependensi Node.js (NPM)
+echo Tugas 7/9: npm install
 echo =========================================
-echo Memulai: Memasang dependensi Node.js (NPM)...
-npm install
-if %errorlevel% equ 0 (
-    echo ^%GREEN_TEXT^%Selesai: Dependensi Node.js berhasil dipasang.^%RESET_COLOR^%
-) else (
-    echo ^%RED_TEXT^%ERROR: Pemasangan dependensi Node.js gagal!^%RESET_COLOR^%
+cmd /c npm install
+if !errorlevel! neq 0 (
+    echo ERROR: npm gagal!
+    echo ERRORLEVEL: !errorlevel!
     pause
-    exit /b %errorlevel%
+    goto END
 )
+timeout /t 1 >nul
+
 
 echo =========================================
-echo Tugas 8/9: Membuat rute Wayfinder
+echo Tugas 8/9: php artisan wayfinder:generate
 echo =========================================
-echo Memulai: Membuat rute Wayfinder...
-php artisan wayfinder:generate
-if %errorlevel% equ 0 (
-    echo ^%GREEN_TEXT^%Selesai: Rute Wayfinder berhasil dibuat.^%RESET_COLOR^%
-) else (
-    echo ^%RED_TEXT^%ERROR: Pembuatan rute Wayfinder gagal!^%RESET_COLOR^%
+cmd /c php artisan wayfinder:generate
+if !errorlevel! neq 0 (
+    echo ERROR: Wayfinder gagal!
+    echo ERRORLEVEL: !errorlevel!
     pause
-    exit /b %errorlevel%
+    goto END
 )
+timeout /t 1 >nul
+
 
 echo =========================================
-echo Tugas 9/9: Menjalankan Laravel Pint untuk pemformatan kode
+echo Tugas 9/9: Laravel Pint
 echo =========================================
-echo Memulai: Menjalankan Laravel Pint untuk pemformatan kode...
-vendor\bin\pint --dirty
-if %errorlevel% equ 0 (
-    echo ^%GREEN_TEXT^%Selesai: Laravel Pint berhasil dijalankan.^%RESET_COLOR^%
-) else (
-    echo ^%RED_TEXT^%ERROR: Laravel Pint gagal dijalankan!^%RESET_COLOR^%
+cmd /c vendor\bin\pint --dirty
+if !errorlevel! neq 0 (
+    echo ERROR: Pint gagal!
+    echo ERRORLEVEL: !errorlevel!
     pause
-    exit /b %errorlevel%
+    goto END
 )
 
 echo =========================================
-echo Penyiapan selesai!
-echo Semua tugas telah diproses.
+echo Semua tugas selesai!
 echo =========================================
+pause
+goto :EOF
+
+:END
+echo -----------------------------------------
+echo Proses dihentikan karena terjadi error.
+echo -----------------------------------------
 pause
