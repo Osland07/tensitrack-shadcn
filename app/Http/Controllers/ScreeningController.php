@@ -17,6 +17,26 @@ class ScreeningController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $user = $request->user();
+
+        $query = Screening::with(['user', 'riskLevel'])->latest();
+
+        if (! $user->is_admin) {
+            $query->where('user_id', $user->id);
+        }
+
+        $screenings = $query->paginate(10)->withQueryString();
+
+        return Inertia::render('Screenings/History', [
+            'screenings' => $screenings,
+        ]);
+    }
+
+    /**
      * Process the user's screening answers and return the inference results.
      */
     public function store(Request $request)

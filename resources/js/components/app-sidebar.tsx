@@ -10,16 +10,16 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard } from '@/routes/index';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid, AlertTriangle, ListChecks } from 'lucide-react';
 import RiskLevelController from '@/actions/App/Http/Controllers/Admin/RiskLevelController';
 import RiskFactorController from '@/actions/App/Http/Controllers/Admin/RiskFactorController';
-import { index as adminScreeningsIndex } from '@/routes/admin/screenings';
+import { index as screeningsIndex } from '@/routes/screenings';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
+const adminNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard().url,
@@ -42,12 +42,32 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Riwayat Skrining',
-        href: adminScreeningsIndex().url,
-        icon: ListChecks, // Using ListChecks as a placeholder icon for history
+        href: screeningsIndex.url(),
+        icon: ListChecks,
     },
 ];
 
+const userNavItems: NavItem[] = [
+    {
+        title: 'Dashboard',
+        href: dashboard().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Riwayat Skrining',
+        href: screeningsIndex.url(),
+        icon: ListChecks,
+    },
+]
+
 export function AppSidebar() {
+    // Temporarily removing user role check to diagnose
+    // const { auth } = usePage().props;
+    // const user = auth.user;
+    // const navItems = user.is_admin ? adminNavItems : userNavItems;
+
+    const navItems = adminNavItems; // Always show admin items for testing
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -63,7 +83,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={navItems} />
             </SidebarContent>
 
             <SidebarFooter>

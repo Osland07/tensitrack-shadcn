@@ -81,3 +81,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
+
+Route::get('/riwayat-skrining', [App\Http\Controllers\ScreeningController::class, 'index'])->middleware(['auth'])->name('screenings.index');
