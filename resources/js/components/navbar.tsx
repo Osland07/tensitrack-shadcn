@@ -126,23 +126,15 @@ export default function Navbar({ canRegister = true }: { canRegister?: boolean; 
                     <div className="hidden md:flex items-center gap-4">
                         {auth.user ? (
                             <>
-                                {auth.is_admin ? (
-                                    <>
-                                        <Button variant="secondary" asChild className="font-bold">
-                                            <Link href={dashboard().url}>Dashboard</Link>
-                                        </Button>
-                                        <Button variant="secondary" asChild className="font-bold">
-                                            <Link href={adminScreeningsIndex().url}>Riwayat Skrining</Link>
-                                        </Button>
-                                        <Button variant="secondary" asChild className="font-bold">
-                                            <Link href={profileEdit().url}>Profil</Link>
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <Button variant="secondary" asChild className="font-bold">
-                                        <Link href={profileUserEdit().url}>Profil</Link>
-                                    </Button>
-                                )}
+                                <Button variant="secondary" asChild className="font-bold">
+                                    <Link href={dashboard().url}>Dashboard</Link>
+                                </Button>
+                                <Button variant="secondary" asChild className="font-bold">
+                                    <Link href={adminScreeningsIndex().url}>Riwayat Skrining</Link>
+                                </Button>
+                                <Button variant="secondary" asChild className="font-bold">
+                                    <Link href={profileEdit().url}>Profil</Link>
+                                </Button>
                                 <Button variant="secondary" asChild className="font-bold">
                                     <Link href={logout()} method="post" as="button">Logout</Link>
                                 </Button>

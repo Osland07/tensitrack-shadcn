@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Screening;
 use App\Services\HypertensionInferenceService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Models\Screening; // Added import for Screening model
+use Inertia\Inertia; // Added import for Screening model
 
 class ScreeningController extends Controller
 {
@@ -23,15 +23,13 @@ class ScreeningController extends Controller
     {
         $user = $request->user();
 
-        $query = Screening::with(['user', 'riskLevel'])->latest();
+        $query = Screening::with(['user', 'tingkatRisiko'])->latest();
 
-        if (! $user->is_admin) {
-            $query->where('user_id', $user->id);
-        }
+        $query->where('user_id', $user->id);
 
         $screenings = $query->paginate(10)->withQueryString();
 
-        return Inertia::render('Screenings/History', [
+        return Inertia::render('Client/Riwayat/Index', [
             'screenings' => $screenings,
         ]);
     }
@@ -46,22 +44,22 @@ class ScreeningController extends Controller
 
         $results = $this->inferenceService->runInference($userAnswers);
 
-        $riskLevelModel = \App\Models\RiskLevel::where('name', $results[0]['risk_name'])->first();
+        $tingkatRisikoModel = \App\Models\TingkatRisiko::where('nama', $results[0]['nama_risiko'])->first();
 
-        // Map results to include full RiskLevel data
-        $formattedResults = collect($results)->map(function ($result) use ($riskLevelModel) {
+        // Map results to include full TingkatRisiko data
+        $formattedResults = collect($results)->map(function ($result) use ($tingkatRisikoModel) {
             return [
-                'risk_name' => $result['risk_name'],
+                'nama_risiko' => $result['nama_risiko'],
                 'explanation' => $result['explanation'],
-                'full_description' => $riskLevelModel?->description,
-                'suggestion' => $riskLevelModel?->suggestion,
+                'full_description' => $tingkatRisikoModel?->description,
+                'suggestion' => $tingkatRisikoModel?->suggestion,
             ];
         })->all();
 
         // Save screening to database
         $screening = Screening::create([
             'user_id' => auth()->id(), // null if guest, user ID if authenticated
-            'risk_level_id' => $riskLevelModel?->id,
+            'tingkat_risiko_id' => $tingkatRisikoModel?->id,
             'answers' => $userAnswers,
             'results' => $formattedResults,
         ]);

@@ -2,19 +2,19 @@
 
 namespace App\Services;
 
-use App\Models\RiskFactor;
-use App\Models\RiskLevel;
+use App\Models\FaktorRisiko;
 use Illuminate\Support\Collection;
 
 class HypertensionInferenceService
 {
     /**
-     * @var Collection<int, RiskFactor>
+     * @var Collection<int, FaktorRisiko>
      */
-    protected $riskFactors;
+    protected $faktorRisiko;
 
     /**
      * The inference rules.
+     *
      * @var array
      */
     public function getRules(): array
@@ -41,50 +41,50 @@ class HypertensionInferenceService
     /**
      * Runs the inference engine based on the new logic.
      *
-     * @param array $userAnswers An associative array of fact codes that are true (e.g., ['E01' => true, 'E03' => true]).
+     * @param  array  $userAnswers  An associative array of fact codes that are true (e.g., ['E01' => true, 'E03' => true]).
      * @return array An array of inferred risk levels with their explanations.
      */
     public function runInference(array $userAnswers): array
     {
         $e01_is_active = $userAnswers['E01'] ?? false;
-        
+
         $other_factors_count = 0;
         for ($i = 2; $i <= 11; $i++) {
-            $factor = 'E' . str_pad($i, 2, '0', STR_PAD_LEFT);
-            if (!empty($userAnswers[$factor])) {
+            $factor = 'E'.str_pad($i, 2, '0', STR_PAD_LEFT);
+            if (! empty($userAnswers[$factor])) {
                 $other_factors_count++;
             }
         }
 
-        $risk_name = '';
+        $nama_risiko = '';
         $explanation = '';
 
         if ($e01_is_active) {
             if ($other_factors_count >= 3) {
-                $risk_name = 'Tinggi';
+                $nama_risiko = 'Tinggi';
                 $explanation = 'E01 aktif dan 3 atau lebih faktor lain aktif.';
             } else {
-                $risk_name = 'Sedang';
+                $nama_risiko = 'Sedang';
                 $explanation = 'E01 aktif dan 0-2 faktor lain aktif.';
             }
         } else {
             if ($other_factors_count >= 5) {
-                $risk_name = 'Tinggi';
+                $nama_risiko = 'Tinggi';
                 $explanation = 'E01 tidak aktif dan 5 atau lebih faktor lain aktif.';
             } elseif ($other_factors_count >= 3) {
-                $risk_name = 'Sedang';
+                $nama_risiko = 'Sedang';
                 $explanation = 'E01 tidak aktif dan 3-4 faktor lain aktif.';
             } else {
-                $risk_name = 'Rendah';
+                $nama_risiko = 'Rendah';
                 $explanation = 'E01 tidak aktif dan 0-2 faktor lain aktif.';
             }
         }
 
         return [
             [
-                'risk_name' => $risk_name,
+                'nama_risiko' => $nama_risiko,
                 'explanation' => $explanation,
-            ]
+            ],
         ];
     }
 }

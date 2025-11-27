@@ -2,7 +2,6 @@
 
 namespace App\Http\Responses;
 
-use Illuminate\Http\Request;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class CustomLoginResponse implements LoginResponseContract
@@ -15,10 +14,6 @@ class CustomLoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
-        if ($request->user()->is_admin) {
-            return redirect()->intended('/dashboard');
-        }
-
-        return redirect()->intended('/');
+        return redirect()->intended('/dashboard');
     }
 }

@@ -3,7 +3,6 @@ import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
     user: User;
-    is_admin: boolean;
 }
 
 export interface BreadcrumbItem {
@@ -33,20 +32,19 @@ export interface SharedData {
 
 export interface User {
     id: number;
-    name: string;
+    nama: string;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
-    is_admin: boolean;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export interface RiskLevel {
+export interface TingkatRisiko {
     id: number;
-    name: string;
+    nama: string;
     description: string;
     suggestion: string;
 }
@@ -54,11 +52,11 @@ export interface RiskLevel {
 export interface Screening {
     id: number;
     user_id: number;
-    risk_level_id: number;
+    tingkat_risiko_id: number;
     answers: string;
     results: string;
     created_at: string;
     updated_at: string;
     user?: User;
-    risk_level?: RiskLevel;
+    tingkat_risiko?: TingkatRisiko;
 }

@@ -14,9 +14,9 @@ import { Check, X } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 // Define a type for RiskFactor as received from the backend
-interface RiskFactor {
-    code: string;
-    name: string; // The backend passes 'name' as the question text
+interface FaktorRisiko {
+    kode: string;
+    nama: string; // The backend passes 'name' as the question text
 }
 
 type UserAnswers = {
@@ -33,10 +33,10 @@ interface BackendResult {
 interface ScreeningModalProps {
     isOpen: boolean;
     onClose: () => void;
-    riskFactors: RiskFactor[]; // New prop
+    faktorRisiko: FaktorRisiko[]; // New prop
 }
 
-export default function ScreeningModal({ isOpen, onClose, riskFactors }: ScreeningModalProps) {
+export default function ScreeningModal({ isOpen, onClose, faktorRisiko }: ScreeningModalProps) {
     const [step, setStep] = useState<'initial' | 'screening' | 'results'>('initial');
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [userAnswersData, setUserAnswersData] = useState<UserAnswers>({}); // Changed to store factCode => boolean
@@ -48,16 +48,16 @@ export default function ScreeningModal({ isOpen, onClose, riskFactors }: Screeni
     };
 
     const handleAnswer = async (answer: boolean) => {
-        const currentQuestion = riskFactors[currentQuestionIndex];
+        const currentQuestion = faktorRisiko[currentQuestionIndex];
         
         // Store answer in userAnswersData
         const updatedUserAnswers = {
             ...userAnswersData,
-            [currentQuestion.code]: answer,
+            [currentQuestion.kode]: answer,
         };
         setUserAnswersData(updatedUserAnswers);
 
-        if (currentQuestionIndex < riskFactors.length - 1) { // Use riskFactors.length
+        if (currentQuestionIndex < faktorRisiko.length - 1) { // Use faktorRisiko.length
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         } else {
             // Last question answered, submit to backend
@@ -113,7 +113,7 @@ export default function ScreeningModal({ isOpen, onClose, riskFactors }: Screeni
         onClose();
     };
 
-    const progressValue = ((currentQuestionIndex + 1) / riskFactors.length) * 100; // Use riskFactors.length
+    const progressValue = ((currentQuestionIndex + 1) / faktorRisiko.length) * 100; // Use faktorRisiko.length
 
     const renderContent = () => {
         switch (step) {
@@ -122,13 +122,13 @@ export default function ScreeningModal({ isOpen, onClose, riskFactors }: Screeni
                     <>
                         <DialogHeader className="p-6">
                             <DialogTitle className="text-center text-sm font-normal text-muted-foreground">
-                                Pertanyaan {currentQuestionIndex + 1} dari {riskFactors.length}
+                                Pertanyaan {currentQuestionIndex + 1} dari {faktorRisiko.length}
                             </DialogTitle>
                             <Progress value={progressValue} className="w-full h-2" />
                         </DialogHeader>
                         <div className="px-6 py-8">
                             <p className="text-center text-2xl font-bold text-primary min-h-[100px] flex items-center justify-center">
-                                {riskFactors[currentQuestionIndex].name} {/* Use name for text */}
+                                {faktorRisiko[currentQuestionIndex].name} {/* Use name for text */}
                             </p>
                         </div>
                         <DialogFooter className="grid grid-cols-2 gap-0 mt-auto">
@@ -149,7 +149,7 @@ export default function ScreeningModal({ isOpen, onClose, riskFactors }: Screeni
                 const detectedFacts = Object.entries(userAnswersData)
                                             .filter(([, answered]) => answered === true) // Filter by true answers
                                             .map(([code]) => {
-                                                const question = riskFactors.find(q => q.code === code); // Find question from riskFactors
+                                                const question = faktorRisiko.find(q => q.code === code); // Find question from faktorRisiko
                                                 return question ? question.name : `Fakta ${code}`; // Use name for text
                                             });
 

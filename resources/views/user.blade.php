@@ -687,7 +687,7 @@
 
     {{-- BAGIAN MODALS & SCRIPTS USER --}}
     @if (Auth::check() && Gate::check('asUser'))
-        @section('title', auth()->user()->name . html_entity_decode(' &mdash;'))
+        @section('title', auth()->user()->nama . html_entity_decode(' &mdash;'))
         @include('user.profile-modal')
         @include('user.detail-diagnosis-modal')
         @push('styleLibraries')

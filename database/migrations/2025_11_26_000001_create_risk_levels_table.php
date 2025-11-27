@@ -8,10 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('risk_levels', function (Blueprint $table): void {
+        Schema::create('tingkat_risiko', function (Blueprint $table): void {
             $table->id();
-            $table->string('code')->unique();
-            $table->string('name');
+            $table->string('kode')->unique();
+            $table->string('nama');
             $table->text('description')->nullable();
             $table->text('suggestion')->nullable();
             $table->timestamps();
@@ -20,6 +20,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('risk_levels');
+        Schema::dropIfExists('tingkat_risiko');
     }
 };

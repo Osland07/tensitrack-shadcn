@@ -14,8 +14,8 @@ import { dashboard } from '@/routes/index';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid, AlertTriangle, ListChecks } from 'lucide-react';
-import RiskLevelController from '@/actions/App/Http/Controllers/Admin/RiskLevelController';
-import RiskFactorController from '@/actions/App/Http/Controllers/Admin/RiskFactorController';
+import AdminTingkatRisikoController from '@/actions/App/Http/Controllers/Admin/AdminTingkatRisikoController';
+import AdminFaktorRisikoController from '@/actions/App/Http/Controllers/Admin/AdminFaktorRisikoController';
 import { index as screeningsIndex } from '@/routes/screenings';
 import AppLogo from './app-logo';
 
@@ -27,12 +27,12 @@ const adminNavItems: NavItem[] = [
     },
     {
         title: 'Tingkat Risiko',
-        href: RiskLevelController.index.url(),
+        href: AdminTingkatRisikoController.index.url(),
         icon: AlertTriangle,
     },
     {
         title: 'Faktor Risiko',
-        href: RiskFactorController.index.url(),
+        href: AdminFaktorRisikoController.index.url(),
         icon: ListChecks,
     },
     {
@@ -61,10 +61,7 @@ const userNavItems: NavItem[] = [
 ]
 
 export function AppSidebar() {
-    // Temporarily removing user role check to diagnose
-    // const { auth } = usePage().props;
-    // const user = auth.user;
-    // const navItems = user.is_admin ? adminNavItems : userNavItems;
+
 
     const navItems = adminNavItems; // Always show admin items for testing
 

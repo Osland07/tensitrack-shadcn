@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'user@example.com'],
             [
-                'name' => 'User',
+                'nama' => 'User',
                 'password' => 'password',
                 'email_verified_at' => now(),
             ]
@@ -24,10 +24,9 @@ class UserSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
-                'name' => 'Admin',
+                'nama' => 'Admin',
                 'password' => 'password',
                 'email_verified_at' => now(),
-                'is_admin' => true,
             ]
         );
     }
