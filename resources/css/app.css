@@ -256,3 +256,36 @@
 
     animation: pulseScale 3s ease-in-out infinite;
 }
+
+@media print {
+    body {
+        background-color: #fff !important;
+        color: #000 !important;
+    }
+
+    /* Hide elements not meant for printing */
+    .no-print,
+    .btn-modern, /* Assuming this class is for interactive buttons */
+    .sidebar, /* Assuming you have a sidebar class */
+    nav, /* Hide navigation elements */
+    footer, /* Hide footer */
+    form, /* Hide forms */
+    .pagination /* Hide pagination */
+     {
+        display: none !important;
+    }
+
+    /* Show only print-only content */
+    .print-only {
+        display: block !important;
+    }
+
+    /* Ensure tables and borders are visible */
+    table, th, td {
+        border: 1px solid #000 !important;
+        border-collapse: collapse !important;
+    }
+    thead {
+        background-color: #eee !important;
+    }
+}

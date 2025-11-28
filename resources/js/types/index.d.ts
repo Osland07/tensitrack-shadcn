@@ -32,7 +32,7 @@ export interface SharedData {
 
 export interface User {
     id: number;
-    nama: string;
+    name: string;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
@@ -42,21 +42,39 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export interface TingkatRisiko {
-    id: number;
-    nama: string;
-    description: string;
-    suggestion: string;
+// New interfaces for Screening History
+export interface Paginator<T> {
+    data: T[];
+    links: { url: string | null; label: string; active: boolean }[];
+    current_page: number;
+    last_page: number;
+    from: number | null;
+    to: number | null;
+    total: number;
+    per_page: number; // Added per_page property
 }
 
-export interface Screening {
+// Define RiskLevel interface
+export interface RiskLevel {
     id: number;
-    user_id: number;
-    tingkat_risiko_id: number;
-    answers: string;
-    results: string;
+    code: string;
+    name: string;
+    description: string;
+    suggestion: string;
     created_at: string;
     updated_at: string;
-    user?: User;
-    tingkat_risiko?: TingkatRisiko;
+}
+
+export interface ScreeningHistoryType {
+    id: number;
+    user: User;
+    screening_date: string;
+    weight: number;
+    height: number;
+    bmi: number;
+    screening_result: string | null;
+    answer_options: Record<string, string> | null;
+    created_at: string; // Add created_at
+    updated_at: string; // Add updated_at
+    risk_level?: RiskLevel; // Added optional risk_level
 }

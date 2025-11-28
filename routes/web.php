@@ -1,57 +1,59 @@
 <?php
 
-use App\Http\Controllers\Client\ClientProfileController;
-use App\Models\FaktorRisiko;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
-// General Routes
+use App\Http\Controllers\Client\ClientScreeningController;
+use App\Models\ScreeningHistory; // For route model binding
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
 Route::get('/', function () {
-    return Inertia::render('Client/Home/Index', [
+    return Inertia::render('welcome', [
         'canRegister' => Features::enabled(Features::registration()),
-        'faktorRisiko' => FaktorRisiko::select('code', 'name')->get(),
     ]);
 })->name('home');
-Route::post('/screening/submit', [\App\Http\Controllers\ScreeningController::class, 'store'])->name('screening.submit');
-Route::get('/screening', function () {
-    return Inertia::render('Client/Skrining/Index', [
-        'faktorRisiko' => FaktorRisiko::select('code', 'name')->get(),
-    ])->name('screening.index');
-})->middleware(['auth', 'verified']);
 
-require __DIR__.'/admin/settings.php';
+// Client Screening Routes
+Route::get('screening', [ClientScreeningController::class, 'index'])->name('screening.index');
+Route::post('screening', [ClientScreeningController::class, 'store'])->name('screening.store');
+// Using route model binding for showResult, so ScreeningHistory is automatically injected
+Route::get('screening/{screeningHistory}', [ClientScreeningController::class, 'showResult'])->name('screening.result');
 
-// Client Routes
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::patch('/profile/bmi-update', [ClientProfileController::class, 'updateBmi'])->name('profile.bmi.update');
-    Route::patch('/profile-user', [ClientProfileController::class, 'updateProfile'])->name('profile-user.update');
-    Route::get('/profile-user/edit', function () {
-        $user = auth()->user();
-        $screenings = $user->screenings()->with('riskLevel')->latest()->get();
+    Route::get('dashboard', function () {
+        return Inertia::render('dashboard');
+    })->name('dashboard');
 
-        return Inertia::render('Client/Profil/Edit', [
-            'screenings' => $screenings,
-        ]);
-    })->name('profile-user.edit');
-    Route::get('/riwayat-skrining', [\App\Http\Controllers\ScreeningController::class, 'index'])->name('screenings.index');
-});
+    Route::get('profile', [\App\Http\Controllers\Admin\Settings\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [\App\Http\Controllers\Admin\Settings\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('user-password', [\App\Http\Controllers\Admin\Settings\PasswordController::class, 'edit'])->name('user-password.edit');
+    Route::put('user-password', [\App\Http\Controllers\Admin\Settings\PasswordController::class, 'update'])->name('user-password.update');
 
-// Admin Routes
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
-    Route::prefix('admin')->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/screenings', [\App\Http\Controllers\Admin\ScreeningHistoryController::class, 'index'])
-            ->name('admin.screenings.index');
-        Route::get('/screenings/{screening}', [\App\Http\Controllers\Admin\ScreeningHistoryController::class, 'show'])
-            ->name('admin.screenings.show');
-        Route::get('/rules', function (\App\Services\HypertensionInferenceService $inferenceService) {
-            return Inertia::render('Admin/Rules/Index', [
-                'rules' => $inferenceService->getRules(),
-                'faktorRisiko' => \App\Models\FaktorRisiko::all()->pluck('name', 'code'),
-            ]);
-        })->name('admin.rules');
-        Route::resource('tingkat-risiko', \App\Http\Controllers\Admin\AdminTingkatRisikoController::class)->except(['show']);
-        Route::resource('faktor-risiko', \App\Http\Controllers\Admin\AdminFaktorRisikoController::class)->except(['show']);
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::resource('risk-levels', \App\Http\Controllers\Admin\AdminRiskLevelController::class)->except(['show']);
+        Route::get('risk-levels/print', [\App\Http\Controllers\Admin\AdminRiskLevelController::class, 'print'])->name('risk-levels.print');
+        Route::resource('risk-factors', \App\Http\Controllers\Admin\AdminRiskFactorController::class)->except(['show']);
+        Route::get('risk-factors/print', [\App\Http\Controllers\Admin\AdminRiskFactorController::class, 'print'])->name('risk-factors.print');
+
+        Route::resource('rules', \App\Http\Controllers\Admin\AdminRuleController::class)->except(['show']);
+
+        Route::resource('screening-history', \App\Http\Controllers\Admin\AdminScreeningHistoryController::class);
+        Route::get('screening-history/print', [\App\Http\Controllers\Admin\AdminScreeningHistoryController::class, 'print'])->name('screening-history.print');
+
+        Route::get('appearance', function () {
+            return Inertia::render('admin/appearance/edit');
+        })->name('appearance.edit');
     });
 });

@@ -14,9 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            FaktorRisikoSeeder::class,
-            TingkatRisikoSeeder::class,
-            ScreeningSeeder::class,
+            RiskFactorSeeder::class,
+            RiskLevelSeeder::class,
         ]);
     }
 }

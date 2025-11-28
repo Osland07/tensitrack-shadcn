@@ -83,15 +83,23 @@ const LogoBrandDownload = ({
   );
 };
 
-const Logo = ({ url, className, children, ...props }: LogoProps) => {
+interface LogoProps extends React.HTMLAttributes<HTMLSpanElement> { // Changed to HTMLSpanElement
+  asChild?: boolean; // New prop
+  className?: string;
+  children: React.ReactNode;
+}
+
+const Logo = ({ asChild, className, children, ...props }: LogoProps) => {
+  if (asChild) {
+    return <>{children}</>;
+  }
   return (
-    <a
-      href={url}
+    <span // Changed from <a> to <span>
       className={cn("flex max-h-8 items-center gap-2", className)}
       {...props}
     >
       {children}
-    </a>
+    </span>
   );
 };
 

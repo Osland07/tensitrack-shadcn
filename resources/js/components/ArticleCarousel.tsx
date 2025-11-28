@@ -1,105 +1,92 @@
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import * as React from "react"
+
+import { Card, CardContent } from "@/components/ui/card"
 import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from '@/components/ui/carousel';
-import { ChevronLeft, ChevronRight } from 'lucide-react'; // Keep for other uses if needed, or remove if not used elsewhere
-import { Button } from '@/components/ui/button';
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
+import { Link } from '@inertiajs/react';
 
-interface Article {
-    imgSrc: string;
-    imgAlt: string;
-    title: string;
-    description: string;
-    href: string;
-}
 
-const articles: Article[] = [
-    {
-        imgSrc: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        imgAlt: "Dokter Hipertensi",
-        title: "Masalah Hipertensi di Indonesia, Mengapa Deteksi Dini Penting?",
-        description: "Masalah hipertensi masih menjadi perhatian serius di Indonesia, seiring tingginya angka penderita yang belum terdiagnosis.",
-        href: "https://voi.id/kesehatan/462260/masalah-hipertensi-di-indonesia-mengapa-deteksi-dini-dan-aturan-konsumsi-garam-itu-penting#google_vignette",
-    },
-    {
-        imgSrc: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        imgAlt: "Bahaya Hipertensi",
-        title: "Bahaya Hipertensi, Upaya Pencegahan dan Pengendalian",
-        description: "Hipertensi atau tekanan darah tinggi merupakan penyebab kematian nomor satu di dunia jika tidak segera ditangani.",
-        href: "https://kemkes.go.id/id/bahaya-hipertensi-upaya-pencegahan-dan-pengendalian-hipertensi",
-    },
-    {
-        imgSrc: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        imgAlt: "Diet DASH",
-        title: "Penerapan Dietary Approach to Stop Hypertension (DASH)",
-        description: "Diet DASH merupakan pola makan sehat yang telah terbukti membantu menurunkan tekanan darah dan kolesterol.",
-        href: "https://keslan.kemkes.go.id/view_artikel/2681/penerapan-dietary-approach-to-stop-hipertensi-dash",
-    },
-    {
-        imgSrc: "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        imgAlt: "Faktor Risiko",
-        title: "9 Faktor Risiko Hipertensi yang Perlu Diwaspadai",
-        description: "Kenali faktor risiko yang dapat memicu tekanan darah tinggi mulai dari gaya hidup hingga genetik.",
-        href: "https://www.kompas.com/tren/read/2023/03/31/073000465/9-faktor-risiko-hipertensi-yang-perlu-diwaspadai",
-    },
-    {
-        imgSrc: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        imgAlt: "Olahraga Hipertensi",
-        title: "Olahraga untuk Hipertensi: Panduan Lengkap & Aman",
-        description: "Panduan lengkap olahraga yang aman dan efektif menurut WHO & Kemenkes RI untuk penderita hipertensi.",
-        href: "https://www.indonesian-publichealth.com/olahraga-untuk-hipertensi-panduan-lengkap-menurut-who-kemenkes-ri-aman-efektif/",
-    },
-];
 
-const ArticleCarousel = () => {
-    return (
-        <Carousel
-            opts={{
-                align: "start",
-            }}
-            className="w-full max-w-screen-md mx-auto"
-        >
-            <CarouselContent className="-ml-4">
-                {articles.map((article, index) => (
-                    <CarouselItem key={index} className="basis-1/3 pl-4"> {/* Adjusted to show 3 items */}
-                        <div className="p-1">
-                            <Card className="shadow-sm flex-shrink-0 article-card"
-                                style={{ borderRadius: '12px' }}>
-                                <CardContent className="flex flex-col text-center p-0">
-                                    <div className="overflow-hidden"
-                                        style={{ borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
-                                        <img src={article.imgSrc}
-                                            className="w-full h-48 object-cover transition-transform duration-300 rounded-t-xl" alt={article.imgAlt} />
-                                    </div>
-                                    <div className="card-body flex flex-col items-center text-center p-4">
-                                        <h5 className="font-bold text-primary text-lg mb-3">
-                                            {article.title}
-                                        </h5>
-                                        <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                                            {article.description}
-                                        </p>
-                                        <a href={article.href}
-                                            target="_blank" className="mt-auto underline font-semibold text-primary">
-                                            Baca selengkapnya
-                                        </a>
-                                    </div>
-                                </CardContent>
-                            </Card>
+export default function ArticleCarousel() {
+
+
+  return (
+    <div className="relative">
+      <Carousel
+        opts={{
+            align: "start",
+            loop: true,
+        }}
+        className="w-full max-w-xs sm:max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto"
+      >
+        <CarouselContent>
+            {[
+                {
+                    category: 'Wawasan',
+                    title: 'Masalah Hipertensi di Indonesia, Mengapa Deteksi Dini dan Aturan Konsumsi Garam Itu Penting?',
+                    description: 'Mengupas pentingnya deteksi dini dan regulasi asupan garam dalam menanggulangi masalah hipertensi yang meluas di Indonesia.',
+                    imageUrl: 'https://images.pexels.com/photos/5945763/pexels-photo-5945763.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    url: 'https://voi.id/kesehatan/462260/masalah-hipertensi-di-indonesia-mengapa-deteksi-dini-dan-aturan-konsumsi-garam-itu-penting#google_vignette',
+                },
+                {
+                    category: 'Pencegahan',
+                    title: 'Bahaya Hipertensi, Upaya Pencegahan dan Pengendalian Hipertensi',
+                    description: 'Artikel resmi dari Kemenkes yang menjelaskan bahaya, serta langkah-langkah pencegahan dan pengendalian hipertensi.',
+                    imageUrl: 'https://images.pexels.com/photos/4031818/pexels-photo-4031818.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    url: 'https://kemkes.go.id/id/bahaya-hipertensi-upaya-pencegahan-dan-pengendalian-hipertensi',
+                },
+                {
+                    category: 'Nutrisi',
+                    title: 'Penerapan Dietary Approach to Stop Hypertension (DASH)',
+                    description: 'Panduan praktis dari Kemenkes mengenai penerapan diet DASH sebagai salah satu cara efektif untuk melawan hipertensi.',
+                    imageUrl: 'https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    url: 'https://keslan.kemkes.go.id/view_artikel/2681/penerapan-dietary-approach-to-stop-hypertension-dash',
+                },
+                {
+                    category: 'Faktor Risiko',
+                    title: '9 Faktor Risiko Hipertensi yang Perlu Diwaspadai',
+                    description: 'Kenali 9 faktor risiko utama yang dapat memicu hipertensi agar Anda dapat mengambil langkah antisipasi sejak dini.',
+                    imageUrl: 'https://images.pexels.com/photos/7108339/pexels-photo-7108339.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    url: 'https://www.kompas.com/tren/read/2023/03/31/073000465/9-faktor-risiko-hipertensi-yang-perlu-diwaspadai',
+                },
+                {
+                    category: 'Olahraga',
+                    title: 'Olahraga untuk Hipertensi: Panduan Lengkap Menurut WHO & Kemenkes RI',
+                    description: 'Panduan lengkap dan aman untuk melakukan olahraga bagi penderita hipertensi, sesuai rekomendasi WHO dan Kemenkes.',
+                    imageUrl: 'https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    url: 'https://www.indonesian-publichealth.com/olahraga-untuk-hipertensi-panduan-lengkap-menurut-who-kemenkes-ri-aman-efektif/',
+                },
+            ].map((article, index) => (
+                <CarouselItem key={index} className="sm:basis-1/2 lg:basis-1/3">
+                    <div className="p-1 h-full">
+                        <div className="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col h-full">
+                            <a href={article.url} target="_blank" rel="noopener noreferrer" className="block">
+                                <img src={article.imageUrl} alt={article.title} className="w-full h-48 object-cover" />
+                            </a>
+                            <div className="p-6 flex flex-col flex-grow">
+                                <p className="text-sm font-semibold text-secondary mb-2">{article.category}</p>
+                                <h3 className="text-xl font-bold text-primary mb-3 leading-snug flex-grow">{article.title}</h3>
+                                <p className="text-muted-foreground text-sm mb-4">{article.description}</p>
+                                <a href={article.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:text-secondary transition-colors duration-300 self-start mt-auto">
+                                    Baca Selengkapnya &rarr;
+                                </a>
+                            </div>
                         </div>
-                    </CarouselItem>
-                ))}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-sm border-secondary z-20 flex items-center justify-center"
-                style={{ backgroundColor: '#001B48', color: '#E3943B', border: '1px solid #E3943B' }} />
-            <CarouselNext className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 rounded-full shadow-sm border-secondary z-20 flex items-center justify-center"
-                style={{ backgroundColor: '#001B48', color: '#E3943B', border: '1px solid #E3943B' }} />
-        </Carousel>
-    );
-};
-
-export default ArticleCarousel;
+                    </div>
+                </CarouselItem>
+            ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </div>
+  );
+}

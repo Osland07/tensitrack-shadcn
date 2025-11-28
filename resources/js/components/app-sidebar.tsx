@@ -10,68 +10,56 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes/index';
+import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, AlertTriangle, ListChecks } from 'lucide-react';
-import AdminTingkatRisikoController from '@/actions/App/Http/Controllers/Admin/AdminTingkatRisikoController';
-import AdminFaktorRisikoController from '@/actions/App/Http/Controllers/Admin/AdminFaktorRisikoController';
-import { index as screeningsIndex } from '@/routes/screenings';
+import { BookOpen, Folder, LayoutGrid, AlertTriangle, ListChecks, Gavel, History } from 'lucide-react'; // Added Gavel and History icons
+import AdminRiskLevelController from '@/actions/App/Http/Controllers/Admin/AdminRiskLevelController';
+import AdminRiskFactorController from '@/actions/App/Http/Controllers/Admin/AdminRiskFactorController';
+import AdminRuleController from '@/actions/App/Http/Controllers/Admin/AdminRuleController';
+import AdminScreeningHistoryController from '@/actions/App/Http/Controllers/Admin/AdminScreeningHistoryController';
+
 import AppLogo from './app-logo';
 
-const adminNavItems: NavItem[] = [
+const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard().url,
+        href: dashboard(),
         icon: LayoutGrid,
     },
     {
         title: 'Tingkat Risiko',
-        href: AdminTingkatRisikoController.index.url(),
+        href: AdminRiskLevelController.index.url(),
         icon: AlertTriangle,
     },
     {
         title: 'Faktor Risiko',
-        href: AdminFaktorRisikoController.index.url(),
+        href: AdminRiskFactorController.index.url(),
         icon: ListChecks,
     },
     {
-        title: 'Aturan Sistem',
-        href: '/admin/rules',
-        icon: BookOpen,
+        title: 'Rules', // New item
+        href: AdminRuleController.index.url(),
+        icon: Gavel, // Icon for rules
     },
     {
         title: 'Riwayat Skrining',
-        href: screeningsIndex.url(),
-        icon: ListChecks,
+        href: AdminScreeningHistoryController.index.url(),
+        icon: History,
     },
+
 ];
 
-const userNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Riwayat Skrining',
-        href: screeningsIndex.url(),
-        icon: ListChecks,
-    },
-]
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
-
-
-    const navItems = adminNavItems; // Always show admin items for testing
-
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard().url} prefetch>
+                            <Link href={dashboard()} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -80,10 +68,11 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={navItems} />
+                <NavMain items={mainNavItems} />
             </SidebarContent>
 
             <SidebarFooter>
+                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

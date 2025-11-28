@@ -3,8 +3,7 @@
         "gemini"
     ],
     "editors": [
-        "gemini",
-        "vscode"
+        "gemini"
     ],
     "guidelines": []
 }
